@@ -1,0 +1,28 @@
+name: Build Psych Online Mobile
+
+on: workflow_dispatch
+
+jobs:
+  Build:
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Android
+            os: ubuntu-latest
+            buildArgs: "android -ONLY_ARM64"
+            artifactName: androidBuild
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+          - name: Windows
+            os: windows-latest
+            buildArgs: "windows -D officialBuild -final"
+            artifactName: windowsBuild-x86_64
+            artifactPath: export\release\windows\bin\*
+    uses: ./.github/workflows/build.yml
+    with:
+        name: ${{ matrix.name }}
+        os: ${{ matrix.os }}
+        buildArgs: ${{ matrix.buildArgs }}
+        artifactName: ${{ matrix.artifactName }}
+        artifactPath: ${{ matrix.artifactPath }}
